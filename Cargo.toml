@@ -1,0 +1,7 @@
+[package]
+name = "inebriated"
+version = "0.1.0"
+authors = ["eta"]
+
+[dependencies]
+rand = "0.3"
