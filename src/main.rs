@@ -27,19 +27,20 @@ fn main() {
             }
             if spaces == 2 {
                 if val.is_none() {
-                    db.add_starter(key.as_ref().unwrap().to_owned());
+                    db.add_starter(key.as_ref().expect("ssf").to_owned());
                 }
                 else {
-                    db.insert(key.take().unwrap(), val.as_ref().unwrap().to_owned());
-                    key = Some(val.take().unwrap());
+                    db.insert(key.take().expect("kf"), val.as_ref().expect("vrf").to_owned());
+                    key = Some(val.take().expect("vtf"));
                 }
                 val = Some("".to_string());
                 spaces = 0;
             }
         }
-        if val.as_ref().unwrap() != "" {
+        if val.is_some() && key.is_some() && val.as_ref().unwrap() != "" {
             db.insert(key.take().unwrap(), val.take().unwrap());
         }
     };
+    db.calc_weights();
     db.generate_sentence();
 }
