@@ -5,3 +5,5 @@ authors = ["eta"]
 
 [dependencies]
 rand = "0.3"
+nom = "~1.2.1"
+clap = "2"

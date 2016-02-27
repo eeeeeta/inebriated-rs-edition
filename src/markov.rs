@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::cmp::PartialEq;
 use rgen;
 use rgen::HasWeight;
 pub type KvdbType = HashMap<String, Vec<Key>>;
@@ -8,7 +9,9 @@ pub struct Key {
     wt: u32,
     cwt: u32
 }
-struct SentenceStarter(String, u32);
+#[derive(Debug)]
+pub struct SentenceStarter(String, u32);
+#[derive(Debug)]
 pub struct Markov {
     ssdb: Vec<SentenceStarter>,
     pub kvdb: KvdbType
@@ -28,7 +31,14 @@ impl HasWeight for SentenceStarter {
         self.1
     }
 }
-
+impl PartialEq for SentenceStarter {
+    fn eq(&self, rhs: &SentenceStarter) -> bool {
+        rhs.0 == self.0
+    }
+    fn ne(&self, rhs: &SentenceStarter) -> bool {
+        rhs.0 != self.0
+    }
+}
 impl HasWeight for Key {
     fn getwt(&self) -> u32 {
         self.wt + (self.cwt * 2)
@@ -76,6 +86,9 @@ impl Markov {
             }
         }
     }
+    pub fn is_sentence_starter(&self, str: &str) -> bool {
+        self.ssdb.contains(&SentenceStarter(str.to_owned(), 0))
+    }
     pub fn calc_weights(&mut self) {
         self.calc_kv_weights();
         self.calc_ss_weights();
@@ -112,6 +125,11 @@ impl Markov {
     }
     pub fn add_starter(&mut self, ss: String) {
         println!("mdb: added sentence starter {}", ss);
+        for k in &self.ssdb {
+            if k.0 == ss {
+                return;
+            }
+        }
         self.ssdb.push(SentenceStarter(ss, 1));
     }
 }
